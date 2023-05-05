@@ -37,6 +37,7 @@ exports.registerApi = async (ctx, next) => {
 
     await next()
 }
+const expireTime="30h"
 // 登录接口
 exports.loginApi = async (ctx, next) => {
     const userInfo = ctx.request.body
@@ -53,12 +54,15 @@ exports.loginApi = async (ctx, next) => {
     }
     const tokenStr = jwt.sign({ userName: ctx.request.body.userName }, secretKey, {
         // expiresIn:'30s' //秒
-        expiresIn: '30h'  //小时
+        expiresIn: expireTime  //小时
     })
     ctx.body = {
         code: 200, msg: '登录成功',
         // 调佣jsw.sign()生辰JWT字符串，三个参数分别是：用户信息对象，加密密钥，配置对象
-        token: 'Bearer ' + tokenStr
+        token:tokenStr,
+        // token: 'Bearer ' + tokenStr,
+        data:userLogin.data[0],
+        'expires':expireTime
     }
     // 剔除完毕之后，user 中只保留了用户的 id, username, nickname, email 这四个属性的值
     // const user= { ...(userLogin.data)[0], password: '', user_pic: '' }
